@@ -307,6 +307,36 @@ function AddProperty() {
         },
         uploadedPictures: [],
         sendRequest: 0,
+        userProfile: {
+            agencyName: "",
+            phoneNumber: "",
+        },
+        // openSnack: false,
+        // disabledBtn: false,
+        // titleErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
+        // listingTypeErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
+        // propertyStatusErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
+        // priceErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
+        // areaErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
+        // boroughErrors: {
+        // 	hasErrors: false,
+        // 	errorMessage: "",
+        // },
     }
 
     function ReducerFunction(draft, action) {
@@ -409,6 +439,95 @@ function AddProperty() {
             case "changeSendRequest":
                 draft.sendRequest = draft.sendRequest + 1;
                 break;
+            case "catchUserProfileInfo":
+                draft.userProfile.agencyName = action.profileObject.agency_name;
+                draft.userProfile.phoneNumber = action.profileObject.phone_number;
+                break;
+            // case "openTheSnack":
+            // 	draft.openSnack = true;
+            // 	break;
+
+            // case "disableTheButton":
+            // 	draft.disabledBtn = true;
+            // 	break;
+
+            // case "allowTheButton":
+            // 	draft.disabledBtn = false;
+            // 	break;
+
+            // case "catchTitleErrors":
+            // 	if (action.titleChosen.length === 0) {
+            // 		draft.titleErrors.hasErrors = true;
+            // 		draft.titleErrors.errorMessage = "This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "catchListingTypeErrors":
+            // 	if (action.listingTypeChosen.length === 0) {
+            // 		draft.listingTypeErrors.hasErrors = true;
+            // 		draft.listingTypeErrors.errorMessage = "This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "catchPropertyStatusErrors":
+            // 	if (action.propertyStatusChosen.length === 0) {
+            // 		draft.propertyStatusErrors.hasErrors = true;
+            // 		draft.propertyStatusErrors.errorMessage =
+            // 			"This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "catchPriceErrors":
+            // 	if (action.priceChosen.length === 0) {
+            // 		draft.priceErrors.hasErrors = true;
+            // 		draft.priceErrors.errorMessage = "This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "catchAreaErrors":
+            // 	if (action.areaChosen.length === 0) {
+            // 		draft.areaErrors.hasErrors = true;
+            // 		draft.areaErrors.errorMessage = "This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "catchBoroughErrors":
+            // 	if (action.boroughChosen.length === 0) {
+            // 		draft.boroughErrors.hasErrors = true;
+            // 		draft.boroughErrors.errorMessage = "This field must not be empty";
+            // 	}
+            // 	break;
+
+            // case "emptyTitle":
+            // 	draft.titleErrors.hasErrors = true;
+            // 	draft.titleErrors.errorMessage = "This field must not be empty";
+            // 	break;
+
+            // case "emptyListingType":
+            // 	draft.listingTypeErrors.hasErrors = true;
+            // 	draft.listingTypeErrors.errorMessage = "This field must not be empty";
+            // 	break;
+
+            // case "emptyPropertyStatus":
+            // 	draft.propertyStatusErrors.hasErrors = true;
+            // 	draft.propertyStatusErrors.errorMessage =
+            // 		"This field must not be empty";
+            // 	break;
+
+            // case "emptyPrice":
+            // 	draft.priceErrors.hasErrors = true;
+            // 	draft.priceErrors.errorMessage = "This field must not be empty";
+            // 	break;
+
+            // case "emptyArea":
+            // 	draft.areaErrors.hasErrors = true;
+            // 	draft.areaErrors.errorMessage = "This field must not be empty";
+            // 	break;
+
+            // case "emptyBoroug":
+            // 	draft.borougErrors.hasErrors = true;
+            // 	draft.borougErrors.errorMessage = "This field must not be empty";
+            // 	break;
         }
     }
 
@@ -794,6 +913,25 @@ function AddProperty() {
         }
     }, [state.uploadedPictures[4]]);
 
+    // request to get profile info
+    useEffect(() => {
+        async function GetProfileInfo() {
+            try {
+                const response = await Axios.get(
+                    `http://localhost:8000/api/profiles/${GlobalState.userId}/`
+                );
+                console.log(response.data);
+                dispatch({
+                    type: "catchUserProfileInfo",
+                    profileObject: response.data,
+                });
+            } catch (e) {
+                console.log(e.response);
+            }
+        }
+        GetProfileInfo();
+    }, []);
+
     function FormSubmit(e) {
         e.preventDefault();
         console.log('the form has been submitted')
@@ -864,6 +1002,82 @@ function AddProperty() {
         }
     }
 
+    function SubmitButtonDisplay() {
+        console.log(22222)
+        console.log(GlobalState.userIsLogged)
+        console.log(state.userProfile.agencyName)
+        if (
+            GlobalState.userIsLogged &&
+            state.userProfile.agencyName !== null &&
+            state.userProfile.agencyName !== "" &&
+            state.userProfile.phoneNumber !== null &&
+            state.userProfile.phoneNumber !== ""
+        ) {
+            return (
+                <Button
+                    variant="contained"
+                    fullWidth
+                    type="submit"
+                    style={{
+                        backgroundColor: "green",
+                        color: "white",
+                        fontSize: "1.1rem",
+                        marginLeft: "1rem",
+                        "&:hover": {
+                            backgroundColor: "blue",
+                        },
+                    }}
+                    disabled={state.disabledBtn}
+                >
+                    SUBMIT
+                </Button>
+            );
+        } else if (
+            GlobalState.userIsLogged &&
+            (state.userProfile.agencyName === null ||
+                state.userProfile.agencyName === "" ||
+                state.userProfile.phoneNumber === null ||
+                state.userProfile.phoneNumber === "")
+        ) {
+            return (
+                <Button
+                    variant="outlined"
+                    fullWidth
+                    style={{
+                        backgroundColor: "green",
+                        color: "white",
+                        fontSize: "1.1rem",
+                        marginLeft: "1rem",
+                        "&:hover": {
+                            backgroundColor: "blue",
+                        },
+                    }}
+                    onClick={() => navigate("/profile")}
+                >
+                    COMPLETE YOUR PROFILE TO ADD A PROPERTY
+                </Button>
+            );
+        } else if (!GlobalState.userIsLogged) {
+            return (
+                <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => navigate("/login")}
+                    style={{
+                        backgroundColor: "green",
+                        color: "white",
+                        fontSize: "1.1rem",
+                        marginLeft: "1rem",
+                        "&:hover": {
+                            backgroundColor: "blue",
+                        },
+                    }}
+                >
+                    SIGN IN TO ADD A PROPERTY
+                </Button>
+            );
+        }
+    }
     return (
         <div className="formContainer" style={{ width: "75%", marginLeft: "auto", marginRight: "auto", marginTop: "3rem", border: "5px solid black", padding: "3rem" }}>
             <form onSubmit={FormSubmit}>
@@ -1249,23 +1463,13 @@ function AddProperty() {
                         {state.picture5Value ? <li>{state.picture5Value.name}</li> : ""}
                     </ul>
                 </Grid>
-
-                <Grid item container xs={8} style={{ marginTop: "1rem", marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        type="submit"
-                        style={{
-                            backgroundColor: "green",
-                            color: "white",
-                            fontSize: "1.1rem",
-                            marginRight: "1rem",
-                            "&:hover": {
-                                backgroundColor: "blue"
-                            }
-                        }}>
-                        SUBMIT
-                    </Button>
+                <Grid
+                    item
+                    container
+                    xs={8}
+                    style={{ marginTop: "1rem", marginLeft: "auto", marginRight: "auto" }}
+                >
+                    {SubmitButtonDisplay()}
                 </Grid>
             </form>
             <Button onClick={() => console.log(state.uploadedPictures)}>Test btn</Button>

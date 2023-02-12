@@ -24,6 +24,11 @@ function Header() {
         setAnchorEl(null);
     };
 
+    function handleProfile() {
+        setAnchorEl(null);
+        navigate("/profile");
+    }
+
     async function handleLogout() {
         setAnchorEl(null);
         const confirmLogout = window.confirm("Are you sure you want to leave?");
@@ -51,7 +56,7 @@ function Header() {
                 </div>
                 <div>
                     <Button color="inherit" onClick={() => navigate('/listings')} style={{ marginRight: "2rem" }}><Typography variant="h6">Listings</Typography></Button>
-                    <Button color="inherit" style={{ marginLeft: "2rem" }}><Typography variant="h6">Agencies</Typography></Button>
+                    <Button color="inherit" onClick={() => navigate("/agencies")} style={{ marginLeft: "2rem" }}><Typography variant="h6">Agencies</Typography></Button>
                 </div>
                 <div style={{ marginLeft: "auto", marginRight: "10rem" }}>
                     <Button onClick={() => navigate('/addproperty')}
@@ -106,7 +111,7 @@ function Header() {
                             'aria-labelledby': 'basic-button',
                         }}
                     >
-                        <MenuItem onClick={handleClose}
+                        <MenuItem
                             style={{
                                 color: "black",
                                 backgroundColor: "green",
@@ -114,7 +119,8 @@ function Header() {
                                 fontWeight: "bolder",
                                 borderRadius: "15px",
                                 marginBottom: "0.25rem",
-                            }}>
+                            }}
+                            onClick={handleProfile}>
                             Profile
                         </MenuItem>
                         <MenuItem onClick={handleLogout}

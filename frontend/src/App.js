@@ -13,6 +13,10 @@ import Header from "./Components/Header";
 import Testing from "./Components/Testing";
 import Register from "./Components/Register";
 import AddProperty from "./Components/AddProperty";
+import Profile from "./Components/Profile";
+import Agencies from "./Components/Agencies";
+import AgencyDetail from "./Components/AgencyDetail";
+import ListingDetail from "./Components/ListingDetail";
 
 // Contexts
 import DispatchContext from "./Contexts/DispatchContext";
@@ -74,6 +78,10 @@ function App() {
             <Route path='/login' element={<Login />} />
             <Route path='/register' element={<Register />} />
             <Route path="/addproperty" element={<AddProperty />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/agencies" element={<Agencies />} />
+            <Route path="/agencies/:id" element={<AgencyDetail />} />
+            <Route path="/listings/:id" element={<ListingDetail />} />
             <Route path='/listings' element={<Listing />} />
             <Route path='/testing' element={<Testing />} />
           </Routes>

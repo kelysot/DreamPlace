@@ -18,6 +18,7 @@ import Agencies from "./Components/Agencies";
 import AgencyDetail from "./Components/AgencyDetail";
 import ListingDetail from "./Components/ListingDetail";
 import AccountCreated from "./Components/AccountCreated";
+import Activation from "./Components/Activation";
 
 // Contexts
 import DispatchContext from "./Contexts/DispatchContext";
@@ -76,6 +77,7 @@ function App() {
           <Header />
           <Routes>
             <Route path='/' element={<Home />} />
+            <Route path="/activate/:uid/:token" element={<Activation />} />
             <Route path='/login' element={<Login />} />
             <Route path="/created" element={<AccountCreated />} />
             <Route path='/register' element={<Register />} />

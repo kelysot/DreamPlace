@@ -4,18 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useImmerReducer } from "use-immer";
 // MUI
 import {
-    Grid,
-    AppBar,
     Typography,
-    Button,
-    Card,
-    CardHeader,
-    CardMedia,
-    CardContent,
-    CircularProgress,
-    TextField,
-    Snackbar,
-    Alert,
 } from "@mui/material";
 
 // Contexts

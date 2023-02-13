@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
@@ -9,14 +9,8 @@ import StateContext from "../Contexts/StateContext";
 // MUI
 import {
     Grid,
-    AppBar,
     Typography,
     Button,
-    Card,
-    CardHeader,
-    CardMedia,
-    CardContent,
-    CircularProgress,
     TextField,
     FormControlLabel,
     Checkbox,

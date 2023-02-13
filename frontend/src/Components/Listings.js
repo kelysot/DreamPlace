@@ -8,8 +8,6 @@ import {
     TileLayer,
     Marker,
     Popup,
-    Polyline,
-    Polygon,
     useMap,
 } from "react-leaflet";
 import { Icon } from "leaflet";
@@ -34,10 +32,6 @@ import RoomIcon from "@mui/icons-material/Room";
 import houseIconPng from "./Assets/Mapicons/house.png";
 import apartmentIconPng from "./Assets/Mapicons/apartment.png";
 import officeIconPng from "./Assets/Mapicons/office.png";
-// Assets
-import img1 from "./Assets/img1.jpg";
-import myListings from "./Assets/Data/Dummydata";
-import polygonOne from "./Shape";
 
 function Listings() {
     const navigate = useNavigate();
@@ -55,9 +49,6 @@ function Listings() {
         iconUrl: officeIconPng,
         iconSize: [40, 40],
     });
-
-    const [latitude, setLatitude] = useState(51.48740865233002);
-    const [longitude, setLongitude] = useState(-0.12667052265135625);
 
     const initialState = {
         mapInstance: null,
@@ -78,22 +69,6 @@ function Listings() {
         dispatch({ type: "getMap", mapData: map });
         return null;
     }
-
-    function GoEast() {
-        setLatitude(51.46567014039476);
-        setLongitude(0.2596173538795676);
-    }
-
-    function GoCenter() {
-        setLatitude(51.48740865233002);
-        setLongitude(-0.12667052265135625);
-    }
-
-    const polyOne = [
-        [51.505, -0.09],
-        [51.51, -0.1],
-        [51.51, -0.12],
-    ];
 
     const [allListings, setAllListings] = useState([]);
     const [dataIsLoading, setDataIsLoading] = useState(true);
@@ -279,19 +254,6 @@ function Listings() {
                                     </Marker>
                                 );
                             })}
-
-                            {/* <Marker icon={officeIcon} position={[latitude, longitude]}>
-								<Popup>
-									<Typography variant="h5">A title</Typography>
-									<img src={img1} style={{ height: "14rem", width: "18rem" }} />
-									<Typography variant="body1">
-										This is some text below the title
-									</Typography>
-									<Button variant="contained" fullWidth>
-										A Link
-									</Button>
-								</Popup>
-							</Marker> */}
                         </MapContainer>
                     </div>
                 </AppBar>

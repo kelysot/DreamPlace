@@ -5,7 +5,7 @@ import { useImmerReducer } from "use-immer";
 
 //MUI
 import {
-    Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress, TextField, Alert, Snackbar
+    Grid, AppBar, Typography, Button, TextField, Alert, Snackbar
 } from "@mui/material";
 
 // Contexts
@@ -84,7 +84,6 @@ function Login() {
                         {
                             cancelToken: source.token
                         });
-                    console.log(response);
                     dispatch({
                         type: 'catchToken',
                         tokenValue: response.data.auth_token,

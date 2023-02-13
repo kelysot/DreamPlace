@@ -1,12 +1,11 @@
 import React, { useState, useContext, useEffect } from "react";
 import Axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // MUI imports
 import {
     Button,
     Typography,
-    Grid,
     AppBar,
     Toolbar,
     Menu,
@@ -17,9 +16,6 @@ import {
 // Contexts
 import StateContext from "../Contexts/StateContext";
 import DispatchContext from "../Contexts/DispatchContext";
-
-// Components
-import CustomCard from "./CustomCard";
 
 function Header() {
     const navigate = useNavigate();
@@ -62,7 +58,7 @@ function Header() {
     useEffect(() => {
         if (openSnack) {
             setTimeout(() => {
-                navigate(0);
+                navigate("/");
             }, 1500);
         }
     }, [openSnack]);

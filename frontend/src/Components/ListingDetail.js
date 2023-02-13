@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
@@ -21,8 +21,6 @@ import {
     TileLayer,
     Marker,
     Popup,
-    useMap,
-    Polygon,
 } from "react-leaflet";
 import { Icon } from "leaflet";
 

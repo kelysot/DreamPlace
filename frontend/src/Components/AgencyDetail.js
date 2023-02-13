@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
@@ -12,17 +12,11 @@ import defaultProfilePicture from "./Assets/defaultProfilePicture.jpg";
 // MUI
 import {
     Grid,
-    AppBar,
     Typography,
-    Button,
     Card,
-    CardHeader,
     CardMedia,
     CardContent,
     CircularProgress,
-    TextField,
-    FormControlLabel,
-    Checkbox,
     IconButton,
     CardActions,
 } from "@mui/material";
@@ -166,9 +160,6 @@ function AgencyDetail() {
                                             ? `http://localhost:8000${listing.picture1}`
                                             : defaultProfilePicture
                                     }
-                                    // image={
-                                    //     listing.picture1 ? listing.picture1 : defaultProfilePicture
-                                    // }
                                     alt="Listing Picture"
                                     onClick={() => navigate(`/listings/${listing.id}`)}
                                     style={{ cursor: "pointer" }}

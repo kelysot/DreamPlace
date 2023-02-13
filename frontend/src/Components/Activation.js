@@ -1,21 +1,10 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import Axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { useImmerReducer } from "use-immer";
 // MUI
 import {
-    Grid,
-    AppBar,
     Typography,
     Button,
-    Card,
-    CardHeader,
-    CardMedia,
-    CardContent,
-    CircularProgress,
-    TextField,
-    Snackbar,
-    Alert,
 } from "@mui/material";
 
 // Contexts

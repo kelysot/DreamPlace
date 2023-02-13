@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable default-case */
-import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
@@ -17,17 +17,9 @@ import ProfileUpdate from "./ProfileUpdate";
 // MUI
 import {
     Grid,
-    AppBar,
     Typography,
     Button,
-    Card,
-    CardHeader,
-    CardMedia,
-    CardContent,
     CircularProgress,
-    TextField,
-    FormControlLabel,
-    Checkbox,
 } from "@mui/material";
 
 function Profile() {

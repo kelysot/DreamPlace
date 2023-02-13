@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { Link } from "react-router-dom";
 
 //MUI imports
-import { Button, Typography, Grid, AppBar, Toolbar } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 //Asserts
 import city from './Assets/city.jpg';

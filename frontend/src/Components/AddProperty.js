@@ -1,7 +1,5 @@
-/* eslint-disable no-duplicate-case */
-/* eslint-disable default-case */
-import React, { useState, useEffect, useRef, useMemo, useContext } from 'react'
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState, useRef, useMemo, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Axios from "axios";
 import { useImmerReducer } from "use-immer";
 
@@ -16,12 +14,7 @@ import {
 } from "react-leaflet";
 
 // Contexts
-import DispatchContext from "../Contexts/DispatchContext";
 import StateContext from "../Contexts/StateContext";
-
-//MUI
-import { Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress, TextField, FormControlLabel, Checkbox } from "@mui/material";
-
 
 // Boroughs
 import Camden from "./Assets/Boroughs/Camden";
@@ -57,6 +50,24 @@ import Redbridge from "./Assets/Boroughs/Redbridge";
 import Richmond from "./Assets/Boroughs/Richmond";
 import Sutton from "./Assets/Boroughs/Sutton";
 import Waltham from "./Assets/Boroughs/Waltham";
+
+// MUI
+import {
+    Grid,
+    AppBar,
+    Typography,
+    Button,
+    Card,
+    CardHeader,
+    CardMedia,
+    CardContent,
+    CircularProgress,
+    TextField,
+    FormControlLabel,
+    Checkbox,
+    Snackbar,
+    Alert,
+} from "@mui/material";
 
 const areaOptions = [
     {
@@ -274,8 +285,6 @@ const rentalFrequencyOptions = [
 
 function AddProperty() {
     const navigate = useNavigate();
-
-    const GlobalDispatch = useContext(DispatchContext);
     const GlobalState = useContext(StateContext);
 
     const initialState = {
@@ -311,41 +320,46 @@ function AddProperty() {
             agencyName: "",
             phoneNumber: "",
         },
-        // openSnack: false,
-        // disabledBtn: false,
-        // titleErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-        // listingTypeErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-        // propertyStatusErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-        // priceErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-        // areaErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-        // boroughErrors: {
-        // 	hasErrors: false,
-        // 	errorMessage: "",
-        // },
-    }
+        openSnack: false,
+        disabledBtn: false,
+        titleErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+        listingTypeErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+        propertyStatusErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+        priceErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+        areaErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+        boroughErrors: {
+            hasErrors: false,
+            errorMessage: "",
+        },
+    };
 
-    function ReducerFunction(draft, action) {
+    function ReducerFuction(draft, action) {
         switch (action.type) {
             case "catchTitleChange":
                 draft.titleValue = action.titleChosen;
+                draft.titleErrors.hasErrors = false;
+                draft.titleErrors.errorMessage = "";
                 break;
+
             case "catchListingTypeChange":
                 draft.listingTypeValue = action.listingTypeChosen;
+                draft.listingTypeErrors.hasErrors = false;
+                draft.listingTypeErrors.errorMessage = "";
                 break;
 
             case "catchDescriptionChange":
@@ -354,11 +368,14 @@ function AddProperty() {
 
             case "catchAreaChange":
                 draft.areaValue = action.areaChosen;
-
+                draft.areaErrors.hasErrors = false;
+                draft.areaErrors.errorMessage = "";
                 break;
 
             case "catchBoroughChange":
                 draft.boroughValue = action.boroughChosen;
+                draft.boroughErrors.hasErrors = false;
+                draft.boroughErrors.errorMessage = "";
                 break;
 
             case "catchLatitudeChange":
@@ -371,10 +388,14 @@ function AddProperty() {
 
             case "catchPropertyStatusChange":
                 draft.propertyStatusValue = action.propertyStatusChosen;
+                draft.propertyStatusErrors.hasErrors = false;
+                draft.propertyStatusErrors.errorMessage = "";
                 break;
 
             case "catchPriceChange":
                 draft.priceValue = action.priceChosen;
+                draft.priceErrors.hasErrors = false;
+                draft.priceErrors.errorMessage = "";
                 break;
 
             case "catchRentalFrequencyChange":
@@ -424,114 +445,120 @@ function AddProperty() {
             case "catchPicture5Change":
                 draft.picture5Value = action.picture5Chosen;
                 break;
+
             case "getMap":
                 draft.mapInstance = action.mapData;
                 break;
+
             case "changeMarkerPosition":
                 draft.markerPosition.lat = action.changeLatitude;
                 draft.markerPosition.lng = action.changeLongitude;
                 draft.latitudeValue = "";
                 draft.longitudeValue = "";
                 break;
+
             case "catchUploadedPictures":
                 draft.uploadedPictures = action.picturesChosen;
                 break;
+
             case "changeSendRequest":
                 draft.sendRequest = draft.sendRequest + 1;
                 break;
+
             case "catchUserProfileInfo":
                 draft.userProfile.agencyName = action.profileObject.agency_name;
                 draft.userProfile.phoneNumber = action.profileObject.phone_number;
                 break;
-            // case "openTheSnack":
-            // 	draft.openSnack = true;
-            // 	break;
 
-            // case "disableTheButton":
-            // 	draft.disabledBtn = true;
-            // 	break;
+            case "openTheSnack":
+                draft.openSnack = true;
+                break;
 
-            // case "allowTheButton":
-            // 	draft.disabledBtn = false;
-            // 	break;
+            case "disableTheButton":
+                draft.disabledBtn = true;
+                break;
 
-            // case "catchTitleErrors":
-            // 	if (action.titleChosen.length === 0) {
-            // 		draft.titleErrors.hasErrors = true;
-            // 		draft.titleErrors.errorMessage = "This field must not be empty";
-            // 	}
-            // 	break;
+            case "allowTheButton":
+                draft.disabledBtn = false;
+                break;
 
-            // case "catchListingTypeErrors":
-            // 	if (action.listingTypeChosen.length === 0) {
-            // 		draft.listingTypeErrors.hasErrors = true;
-            // 		draft.listingTypeErrors.errorMessage = "This field must not be empty";
-            // 	}
-            // 	break;
+            case "catchTitleErrors":
+                if (action.titleChosen.length === 0) {
+                    draft.titleErrors.hasErrors = true;
+                    draft.titleErrors.errorMessage = "This field must not be empty";
+                }
+                break;
 
-            // case "catchPropertyStatusErrors":
-            // 	if (action.propertyStatusChosen.length === 0) {
-            // 		draft.propertyStatusErrors.hasErrors = true;
-            // 		draft.propertyStatusErrors.errorMessage =
-            // 			"This field must not be empty";
-            // 	}
-            // 	break;
+            case "catchListingTypeErrors":
+                if (action.listingTypeChosen.length === 0) {
+                    draft.listingTypeErrors.hasErrors = true;
+                    draft.listingTypeErrors.errorMessage = "This field must not be empty";
+                }
+                break;
 
-            // case "catchPriceErrors":
-            // 	if (action.priceChosen.length === 0) {
-            // 		draft.priceErrors.hasErrors = true;
-            // 		draft.priceErrors.errorMessage = "This field must not be empty";
-            // 	}
-            // 	break;
+            case "catchPropertyStatusErrors":
+                if (action.propertyStatusChosen.length === 0) {
+                    draft.propertyStatusErrors.hasErrors = true;
+                    draft.propertyStatusErrors.errorMessage =
+                        "This field must not be empty";
+                }
+                break;
 
-            // case "catchAreaErrors":
-            // 	if (action.areaChosen.length === 0) {
-            // 		draft.areaErrors.hasErrors = true;
-            // 		draft.areaErrors.errorMessage = "This field must not be empty";
-            // 	}
-            // 	break;
+            case "catchPriceErrors":
+                if (action.priceChosen.length === 0) {
+                    draft.priceErrors.hasErrors = true;
+                    draft.priceErrors.errorMessage = "This field must not be empty";
+                }
+                break;
 
-            // case "catchBoroughErrors":
-            // 	if (action.boroughChosen.length === 0) {
-            // 		draft.boroughErrors.hasErrors = true;
-            // 		draft.boroughErrors.errorMessage = "This field must not be empty";
-            // 	}
-            // 	break;
+            case "catchAreaErrors":
+                if (action.areaChosen.length === 0) {
+                    draft.areaErrors.hasErrors = true;
+                    draft.areaErrors.errorMessage = "This field must not be empty";
+                }
+                break;
 
-            // case "emptyTitle":
-            // 	draft.titleErrors.hasErrors = true;
-            // 	draft.titleErrors.errorMessage = "This field must not be empty";
-            // 	break;
+            case "catchBoroughErrors":
+                if (action.boroughChosen.length === 0) {
+                    draft.boroughErrors.hasErrors = true;
+                    draft.boroughErrors.errorMessage = "This field must not be empty";
+                }
+                break;
 
-            // case "emptyListingType":
-            // 	draft.listingTypeErrors.hasErrors = true;
-            // 	draft.listingTypeErrors.errorMessage = "This field must not be empty";
-            // 	break;
+            case "emptyTitle":
+                draft.titleErrors.hasErrors = true;
+                draft.titleErrors.errorMessage = "This field must not be empty";
+                break;
 
-            // case "emptyPropertyStatus":
-            // 	draft.propertyStatusErrors.hasErrors = true;
-            // 	draft.propertyStatusErrors.errorMessage =
-            // 		"This field must not be empty";
-            // 	break;
+            case "emptyListingType":
+                draft.listingTypeErrors.hasErrors = true;
+                draft.listingTypeErrors.errorMessage = "This field must not be empty";
+                break;
 
-            // case "emptyPrice":
-            // 	draft.priceErrors.hasErrors = true;
-            // 	draft.priceErrors.errorMessage = "This field must not be empty";
-            // 	break;
+            case "emptyPropertyStatus":
+                draft.propertyStatusErrors.hasErrors = true;
+                draft.propertyStatusErrors.errorMessage =
+                    "This field must not be empty";
+                break;
 
-            // case "emptyArea":
-            // 	draft.areaErrors.hasErrors = true;
-            // 	draft.areaErrors.errorMessage = "This field must not be empty";
-            // 	break;
+            case "emptyPrice":
+                draft.priceErrors.hasErrors = true;
+                draft.priceErrors.errorMessage = "This field must not be empty";
+                break;
 
-            // case "emptyBoroug":
-            // 	draft.borougErrors.hasErrors = true;
-            // 	draft.borougErrors.errorMessage = "This field must not be empty";
-            // 	break;
+            case "emptyArea":
+                draft.areaErrors.hasErrors = true;
+                draft.areaErrors.errorMessage = "This field must not be empty";
+                break;
+
+            case "emptyBoroug":
+                draft.borougErrors.hasErrors = true;
+                draft.borougErrors.errorMessage = "This field must not be empty";
+                break;
         }
     }
 
-    const [state, dispatch] = useImmerReducer(ReducerFunction, initialState);
+    const [state, dispatch] = useImmerReducer(ReducerFuction, initialState);
 
     function TheMapComponent() {
         const map = useMap();
@@ -541,6 +568,7 @@ function AddProperty() {
 
     // Use effect to change the map view depending on chosen borough
     // Changing the map view depending on the choen borough
+
     useEffect(() => {
         if (state.boroughValue === "Camden") {
             state.mapInstance.setView([51.54103467179952, -0.14870897037846917], 12);
@@ -776,8 +804,8 @@ function AddProperty() {
         }
     }, [state.boroughValue]);
 
-
     // Borough display function
+
     function BoroughDisplay() {
         if (state.boroughValue === "Camden") {
             return <Polygon positions={Camden} />;
@@ -849,6 +877,7 @@ function AddProperty() {
     }
 
     // Draggable marker
+
     const markerRef = useRef(null);
     const eventHandlers = useMemo(
         () => ({
@@ -920,22 +949,50 @@ function AddProperty() {
                 const response = await Axios.get(
                     `http://localhost:8000/api/profiles/${GlobalState.userId}/`
                 );
-                console.log(response.data);
+
                 dispatch({
                     type: "catchUserProfileInfo",
                     profileObject: response.data,
                 });
-            } catch (e) {
-                console.log(e.response);
-            }
+            } catch (e) { }
         }
         GetProfileInfo();
     }, []);
 
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('the form has been submitted')
-        dispatch({ type: 'changeSendRequest' });
+
+        if (
+            !state.titleErrors.hasErrors &&
+            !state.listingTypeErrors.hasErrors &&
+            !state.propertyStatusErrors.hasErrors &&
+            !state.priceErrors.hasErrors &&
+            !state.areaErrors.hasErrors &&
+            !state.boroughErrors.hasErrors &&
+            state.latitudeValue &&
+            state.longitudeValue
+        ) {
+            dispatch({ type: "changeSendRequest" });
+            dispatch({ type: "disableTheButton" });
+        } else if (state.titleValue === "") {
+            dispatch({ type: "emptyTitle" });
+            window.scrollTo(0, 0);
+        } else if (state.listingTypeValue === "") {
+            dispatch({ type: "emptyListingType" });
+            window.scrollTo(0, 0);
+        } else if (state.propertyStatusValue === "") {
+            dispatch({ type: "emptyPropertyStatus" });
+            window.scrollTo(0, 0);
+        } else if (state.priceValue === "") {
+            dispatch({ type: "emptyPrice" });
+            window.scrollTo(0, 0);
+        } else if (state.areaValue === "") {
+            dispatch({ type: "emptyArea" });
+            window.scrollTo(0, 0);
+        } else if (state.boroughValue === "") {
+            dispatch({ type: "emptyBorough" });
+            window.scrollTo(0, 0);
+        }
     }
 
     useEffect(() => {
@@ -964,17 +1021,16 @@ function AddProperty() {
                 formData.append("picture4", state.picture4Value);
                 formData.append("picture5", state.picture5Value);
                 formData.append("seller", GlobalState.userId);
+
                 try {
                     const response = await Axios.post(
                         "http://localhost:8000/api/listings/create/",
                         formData
                     );
-                    console.log(response.data)
-                    navigate('/listings')
-                    // dispatch({ type: "openTheSnack" });
+
+                    dispatch({ type: "openTheSnack" });
                 } catch (e) {
-                    console.log(e.response)
-                    // dispatch({ type: "allowTheButton" });
+                    dispatch({ type: "allowTheButton" });
                 }
             }
             AddProperty();
@@ -1003,9 +1059,6 @@ function AddProperty() {
     }
 
     function SubmitButtonDisplay() {
-        console.log(22222)
-        console.log(GlobalState.userIsLogged)
-        console.log(state.userProfile.agencyName)
         if (
             GlobalState.userIsLogged &&
             state.userProfile.agencyName !== null &&
@@ -1078,10 +1131,28 @@ function AddProperty() {
             );
         }
     }
+
+    useEffect(() => {
+        if (state.openSnack) {
+            setTimeout(() => {
+                navigate("/listings");
+            }, 1500);
+        }
+    }, [state.openSnack]);
+
     return (
-        <div className="formContainer" style={{ width: "75%", marginLeft: "auto", marginRight: "auto", marginTop: "3rem", border: "5px solid black", padding: "3rem" }}>
+        <div
+            style={{
+                width: "75%",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "3rem",
+                border: "5px solid black",
+                padding: "3rem",
+            }}
+        >
             <form onSubmit={FormSubmit}>
-                <Grid item container justifyContent={"center"}>
+                <Grid item container justifyContent="center">
                     <Typography variant="h4">SUBMIT A PROPERTY</Typography>
                 </Grid>
 
@@ -1092,7 +1163,20 @@ function AddProperty() {
                         variant="standard"
                         fullWidth
                         value={state.titleValue}
-                        onChange={(e) => dispatch({ type: 'catchTitleChange', titleChosen: e.target.value })}
+                        onChange={(e) =>
+                            dispatch({
+                                type: "catchTitleChange",
+                                titleChosen: e.target.value,
+                            })
+                        }
+                        onBlur={(e) =>
+                            dispatch({
+                                type: "catchTitleErrors",
+                                titleChosen: e.target.value,
+                            })
+                        }
+                        error={state.titleErrors.hasErrors ? true : false}
+                        helperText={state.titleErrors.errorMessage}
                     />
                 </Grid>
 
@@ -1110,6 +1194,14 @@ function AddProperty() {
                                     listingTypeChosen: e.target.value,
                                 })
                             }
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: "catchListingTypeErrors",
+                                    listingTypeChosen: e.target.value,
+                                })
+                            }
+                            error={state.listingTypeErrors.hasErrors ? true : false}
+                            helperText={state.listingTypeErrors.errorMessage}
                             select
                             SelectProps={{
                                 native: true,
@@ -1136,6 +1228,14 @@ function AddProperty() {
                                     propertyStatusChosen: e.target.value,
                                 })
                             }
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: "catchPropertyStatusErrors",
+                                    propertyStatusChosen: e.target.value,
+                                })
+                            }
+                            error={state.propertyStatusErrors.hasErrors ? true : false}
+                            helperText={state.propertyStatusErrors.errorMessage}
                             select
                             SelectProps={{
                                 native: true,
@@ -1192,6 +1292,14 @@ function AddProperty() {
                                     priceChosen: e.target.value,
                                 })
                             }
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: "catchPriceErrors",
+                                    priceChosen: e.target.value,
+                                })
+                            }
+                            error={state.priceErrors.hasErrors ? true : false}
+                            helperText={state.priceErrors.errorMessage}
                         />
                     </Grid>
                 </Grid>
@@ -1214,7 +1322,8 @@ function AddProperty() {
                     />
                 </Grid>
 
-                {state.listingTypeValue === "Office" ? (""
+                {state.listingTypeValue === "Office" ? (
+                    ""
                 ) : (
                     <Grid item xs={3} container style={{ marginTop: "1rem" }}>
                         <TextField
@@ -1325,7 +1434,7 @@ function AddProperty() {
                     <Grid item xs={5} style={{ marginTop: "1rem" }}>
                         <TextField
                             id="area"
-                            label="Area"
+                            label="Area*"
                             variant="standard"
                             fullWidth
                             value={state.areaValue}
@@ -1335,6 +1444,14 @@ function AddProperty() {
                                     areaChosen: e.target.value,
                                 })
                             }
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: "catchAreaErrors",
+                                    areaChosen: e.target.value,
+                                })
+                            }
+                            error={state.areaErrors.hasErrors ? true : false}
+                            helperText={state.areaErrors.errorMessage}
                             select
                             SelectProps={{
                                 native: true,
@@ -1351,7 +1468,7 @@ function AddProperty() {
                     <Grid item xs={5} style={{ marginTop: "1rem" }}>
                         <TextField
                             id="borough"
-                            label="Borough"
+                            label="Borough*"
                             variant="standard"
                             fullWidth
                             value={state.boroughValue}
@@ -1361,6 +1478,14 @@ function AddProperty() {
                                     boroughChosen: e.target.value,
                                 })
                             }
+                            onBlur={(e) =>
+                                dispatch({
+                                    type: "catchBoroughErrors",
+                                    boroughChosen: e.target.value,
+                                })
+                            }
+                            error={state.boroughErrors.hasErrors ? true : false}
+                            helperText={state.boroughErrors.errorMessage}
                             select
                             SelectProps={{
                                 native: true,
@@ -1385,8 +1510,8 @@ function AddProperty() {
                     </Grid>
                 </Grid>
 
-                {/* Map  */}
-                {/* <Grid item style={{ marginTop: "1rem" }}>
+                {/* Map */}
+                <Grid item style={{ marginTop: "1rem" }}>
                     {state.latitudeValue && state.longitudeValue ? (
                         <Alert severity="success">
                             You property is located @ {state.latitudeValue},{" "}
@@ -1397,7 +1522,7 @@ function AddProperty() {
                             Locate your property on the map before submitting this form
                         </Alert>
                     )}
-                </Grid> */}
+                </Grid>
                 <Grid item container style={{ height: "35rem", marginTop: "1rem" }}>
                     <MapContainer
                         center={[51.505, -0.09]}
@@ -1463,6 +1588,7 @@ function AddProperty() {
                         {state.picture5Value ? <li>{state.picture5Value.name}</li> : ""}
                     </ul>
                 </Grid>
+
                 <Grid
                     item
                     container
@@ -1472,9 +1598,17 @@ function AddProperty() {
                     {SubmitButtonDisplay()}
                 </Grid>
             </form>
-            <Button onClick={() => console.log(state.uploadedPictures)}>Test btn</Button>
+
+            <Snackbar
+                open={state.openSnack}
+                message="You have successfully added your property!"
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                }}
+            />
         </div>
-    )
+    );
 }
 
-export default AddProperty
+export default AddProperty;

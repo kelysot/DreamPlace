@@ -1,17 +1,28 @@
-import React, { useState, useContext } from 'react'
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
 import Axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 
-//MUI imports
-import { Button, Typography, Grid, AppBar, Toolbar, Menu, MenuItem } from "@mui/material";
+// MUI imports
+import {
+    Button,
+    Typography,
+    Grid,
+    AppBar,
+    Toolbar,
+    Menu,
+    MenuItem,
+    Snackbar,
+} from "@mui/material";
 
 // Contexts
 import StateContext from "../Contexts/StateContext";
 import DispatchContext from "../Contexts/DispatchContext";
 
+// Components
+import CustomCard from "./CustomCard";
+
 function Header() {
     const navigate = useNavigate();
-
     const GlobalState = useContext(StateContext);
     const GlobalDispatch = useContext(DispatchContext);
 
@@ -24,83 +35,114 @@ function Header() {
         setAnchorEl(null);
     };
 
-    function handleProfile() {
+    function HandleProfile() {
         setAnchorEl(null);
         navigate("/profile");
     }
 
-    async function handleLogout() {
+    const [openSnack, setOpenSnack] = useState(false);
+
+    async function HandleLogout() {
         setAnchorEl(null);
         const confirmLogout = window.confirm("Are you sure you want to leave?");
         if (confirmLogout) {
             try {
-                console.log(GlobalState.userToken)
-                const response = await Axios.post('http://localhost:8000/api-auth-djoser/token/logout/',
+                const response = await Axios.post(
+                    "http://localhost:8000/api-auth-djoser/token/logout/",
                     GlobalState.userToken,
-                    { headers: { 'Authorization': 'Token '.concat(GlobalState.userToken) } }
+                    { headers: { Authorization: "Token ".concat(GlobalState.userToken) } }
                 );
-                console.log(response);
+
                 GlobalDispatch({ type: "logout" });
-                navigate("/");
-            } catch (error) {
-                console.log(error.response)
-            }
+                setOpenSnack(true);
+            } catch (e) { }
         }
     }
+
+    useEffect(() => {
+        if (openSnack) {
+            setTimeout(() => {
+                navigate(0);
+            }, 1500);
+        }
+    }, [openSnack]);
 
     return (
         <AppBar position="static" style={{ backgroundColor: "black" }}>
             <Toolbar>
                 <div style={{ marginRight: "auto" }}>
-                    <Button color="inherit" onClick={() => navigate('/')}><Typography variant="h4">Dream Place</Typography></Button>
+                    <Button color="inherit" onClick={() => navigate("/")}>
+                        <Typography variant="h4">LBREP</Typography>{" "}
+                    </Button>
                 </div>
                 <div>
-                    <Button color="inherit" onClick={() => navigate('/listings')} style={{ marginRight: "2rem" }}><Typography variant="h6">Listings</Typography></Button>
-                    <Button color="inherit" onClick={() => navigate("/agencies")} style={{ marginLeft: "2rem" }}><Typography variant="h6">Agencies</Typography></Button>
+                    <Button
+                        color="inherit"
+                        onClick={() => navigate("/listings")}
+                        style={{ marginRight: "2rem" }}
+                    >
+                        <Typography variant="h6">Listings</Typography>{" "}
+                    </Button>
+                    <Button
+                        color="inherit"
+                        style={{ marginLeft: "2rem" }}
+                        onClick={() => navigate("/agencies")}
+                    >
+                        {" "}
+                        <Typography variant="h6">Agencies</Typography>{" "}
+                    </Button>
                 </div>
                 <div style={{ marginLeft: "auto", marginRight: "10rem" }}>
-                    <Button onClick={() => navigate('/addproperty')}
+                    <Button
+                        onClick={() => navigate("/addproperty")}
                         style={{
                             backgroundColor: "green",
                             color: "white",
                             width: "15rem",
                             fontSize: "1.1rem",
-                            marginRight: "1rem"
-                        }}>
+                            // marginRight: "1rem",
+                            // "&:hover": {
+                            // 	backgroundColor: "blue",
+                            // },
+                        }}
+                    >
                         Add Property
                     </Button>
 
                     {GlobalState.userIsLogged ? (
                         <Button
-                            onClick={handleClick}
-                            // onClick={() => navigate('/login')}
                             style={{
                                 backgroundColor: "white",
                                 color: "black",
                                 width: "15rem",
                                 fontSize: "1.1rem",
-                                marginRight: "1rem",
-                                "&:hover": {
-                                    backgroundColor: "green"
-                                }
-                            }}>
+                                marginLeft: "1rem",
+                                // "&:hover": {
+                                // 	backgroundColor: "green",
+                                // },
+                            }}
+                            onClick={handleClick}
+                        // onClick={() => navigate("/login")}
+                        >
                             {GlobalState.userUsername}
                         </Button>
                     ) : (
                         <Button
-                            onClick={() => navigate('/login')}
                             style={{
                                 backgroundColor: "white",
                                 color: "black",
                                 width: "15rem",
                                 fontSize: "1.1rem",
-                                marginRight: "1rem",
-                                "&:hover": {
-                                    backgroundColor: "green"
-                                }
-                            }}>
+                                marginLeft: "1rem",
+                                // "&:hover": {
+                                // 	backgroundColor: "green",
+                                // },
+                            }}
+                            onClick={() => navigate("/login")}
+                        >
                             Login
-                        </Button>)}
+                        </Button>
+                    )}
 
                     <Menu
                         id="basic-menu"
@@ -108,7 +150,7 @@ function Header() {
                         open={open}
                         onClose={handleClose}
                         MenuListProps={{
-                            'aria-labelledby': 'basic-button',
+                            "aria-labelledby": "basic-button",
                         }}
                     >
                         <MenuItem
@@ -120,24 +162,35 @@ function Header() {
                                 borderRadius: "15px",
                                 marginBottom: "0.25rem",
                             }}
-                            onClick={handleProfile}>
+                            onClick={HandleProfile}
+                        >
                             Profile
                         </MenuItem>
-                        <MenuItem onClick={handleLogout}
+                        <MenuItem
                             style={{
                                 color: "black",
                                 backgroundColor: "red",
                                 width: "15rem",
                                 fontWeight: "bolder",
                                 borderRadius: "15px",
-                            }}>
+                            }}
+                            onClick={HandleLogout}
+                        >
                             Logout
                         </MenuItem>
                     </Menu>
+                    <Snackbar
+                        open={openSnack}
+                        message="You have successfully logged out!"
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                        }}
+                    />
                 </div>
             </Toolbar>
         </AppBar>
-    )
+    );
 }
 
-export default Header
+export default Header;

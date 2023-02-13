@@ -4,7 +4,9 @@ import Axios from "axios";
 import { useImmerReducer } from "use-immer";
 
 //MUI
-import { Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress, TextField } from "@mui/material";
+import {
+    Grid, AppBar, Typography, Button, Card, CardHeader, CardMedia, CardContent, CircularProgress, TextField, Alert, Snackbar
+} from "@mui/material";
 
 // Contexts
 import DispatchContext from "../Contexts/DispatchContext";
@@ -21,6 +23,9 @@ function Login() {
         passwordValue: "",
         sendRequest: 0,
         token: "",
+        openSnack: false,
+        disabledBtn: false,
+        serverError: false,
     }
 
     function ReducerFunction(draft, action) {
@@ -39,6 +44,21 @@ function Login() {
                 draft.token = action.tokenValue;
                 break;
 
+            case "openTheSnack":
+                draft.openSnack = true;
+                break;
+
+            case "disableTheButton":
+                draft.disabledBtn = true;
+                break;
+
+            case "allowTheButton":
+                draft.disabledBtn = false;
+                break;
+
+            case "catchServerError":
+                draft.serverError = true;
+                break;
         }
     }
 
@@ -46,8 +66,9 @@ function Login() {
 
     function FormSubmit(e) {
         e.preventDefault();
-        console.log('the form has been submitted')
+
         dispatch({ type: 'changeSendRequest' });
+        dispatch({ type: "disableTheButton" });
     }
 
     useEffect(() => {
@@ -72,9 +93,9 @@ function Login() {
                         type: 'catchToken',
                         tokenValue: response.data.auth_token,
                     })
-                    // navigate('/')
                 } catch (error) {
-                    console.log(error.response);
+                    dispatch({ type: "allowTheButton" });
+                    dispatch({ type: "catchServerError" });
                 }
             }
             SignIn();
@@ -97,16 +118,15 @@ function Login() {
                         {
                             cancelToken: source.token
                         });
-                    console.log(response);
                     GlobalDispatch({
                         type: 'userSignIn',
                         usernameInfo: response.data.username,
                         emailInfo: response.data.email,
                         idInfo: response.data.id,
                     })
-                    navigate('/')
+                    dispatch({ type: "openTheSnack" });
+                    // navigate('/')
                 } catch (error) {
-                    console.log(error.response);
                 }
             }
             GetUserInfo();
@@ -116,12 +136,36 @@ function Login() {
         }
     }, [state.token]);
 
+    useEffect(() => {
+        if (state.openSnack) {
+            setTimeout(() => {
+                navigate("/");
+            }, 1000);
+        }
+    }, [state.openSnack]);
+
     return (
-        <div className="formContainer" style={{ width: "50%", marginLeft: "auto", marginRight: "auto", marginTop: "3rem", border: "5px solid black", padding: "3rem" }}>
+        <div
+            style={{
+                width: "50%",
+                marginLeft: "auto",
+                marginRight: "auto",
+                marginTop: "3rem",
+                border: "5px solid black",
+                padding: "3rem",
+            }}
+        >
             <form onSubmit={FormSubmit}>
-                <Grid item container justifyContent={"center"}>
+                <Grid item container justifyContent="center">
                     <Typography variant="h4">SIGN IN</Typography>
                 </Grid>
+
+                {state.serverError ? (
+                    <Alert severity="error">Incorrect username or password!</Alert>
+                ) : (
+                    ""
+                )}
+
                 <Grid item container style={{ marginTop: "1rem" }}>
                     <TextField
                         id="username"
@@ -129,9 +173,16 @@ function Login() {
                         variant="outlined"
                         fullWidth
                         value={state.usernameValue}
-                        onChange={(e) => dispatch({ type: 'catchUsernameChange', usernameChosen: e.target.value })}
+                        onChange={(e) =>
+                            dispatch({
+                                type: "catchUsernameChange",
+                                usernameChosen: e.target.value,
+                            })
+                        }
+                        error={state.serverError ? true : false}
                     />
                 </Grid>
+
                 <Grid item container style={{ marginTop: "1rem" }}>
                     <TextField
                         id="password"
@@ -140,22 +191,68 @@ function Login() {
                         fullWidth
                         type="password"
                         value={state.passwordValue}
-                        onChange={(e) => dispatch({ type: 'catchPasswordChange', passwordChosen: e.target.value })}
+                        onChange={(e) =>
+                            dispatch({
+                                type: "catchPasswordChange",
+                                passwordChosen: e.target.value,
+                            })
+                        }
+                        error={state.serverError ? true : false}
                     />
                 </Grid>
-                <Grid item container xs={8} style={{ marginTop: "1rem", marginLeft: 'auto', marginRight: 'auto' }}>
-                    <Button variant="contained" fullWidth type="submit" style={{ backgroundColor: "green", color: "white", fontSize: "1.1rem", marginRight: "1rem", "&:hover": { backgroundColor: "blue" } }}>
+
+                <Grid
+                    item
+                    container
+                    xs={8}
+                    style={{ marginTop: "1rem", marginLeft: "auto", marginRight: "auto" }}
+                >
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        type="submit"
+                        style={{
+                            backgroundColor: "green",
+                            color: "white",
+                            fontSize: "1.1rem",
+                            marginLeft: "1rem",
+                            // "&:hover": {
+                            // 	backgroundColor: "blue",
+                            // },
+                        }}
+                        disabled={state.disabledBtn}
+                    >
                         SIGN IN
                     </Button>
                 </Grid>
             </form>
-            <Grid item container justifyContent={"center"} style={{ marginTop: "1rem" }}>
+
+            <Grid
+                item
+                container
+                justifyContent="center"
+                style={{ marginTop: "1rem" }}
+            >
                 <Typography variant="small">
-                    Don't have an account yet? <span onClick={() => navigate("/register")} style={{ cursor: "pointer", color: "green" }}>SIGN UP</span>
+                    Don't have an account yet?{" "}
+                    <span
+                        onClick={() => navigate("/register")}
+                        style={{ cursor: "pointer", color: "green" }}
+                    >
+                        SIGN UP
+                    </span>
                 </Typography>
             </Grid>
+            <Snackbar
+                open={state.openSnack}
+                message="You have successfully logged in"
+                anchorOrigin={{
+                    vertical: "bottom",
+                    horizontal: "center",
+                }}
+            />
         </div>
-    )
+    );
 }
 
 export default Login

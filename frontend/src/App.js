@@ -17,6 +17,7 @@ import Profile from "./Components/Profile";
 import Agencies from "./Components/Agencies";
 import AgencyDetail from "./Components/AgencyDetail";
 import ListingDetail from "./Components/ListingDetail";
+import AccountCreated from "./Components/AccountCreated";
 
 // Contexts
 import DispatchContext from "./Contexts/DispatchContext";
@@ -76,6 +77,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/login' element={<Login />} />
+            <Route path="/created" element={<AccountCreated />} />
             <Route path='/register' element={<Register />} />
             <Route path="/addproperty" element={<AddProperty />} />
             <Route path="/profile" element={<Profile />} />
